@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "seijaku"
+require "optparse"
+require "logger"
+require "yaml"
+
+# bin/seijaku as executor
+# -f payload.yaml
+# -h
+module App
+  include Seijaku
+
+  logger = Logger.new($stdout)
+  options = {}
+
+  opts = OptionParser.new
+  opts.banner = "Seijaku: simply runs YAML tasks with shell"
+  opts.on("-f", "--file FILE", "Payload file path") { |o| options[:payload] = o }
+  opts.on("-h", "--help", "Shows help and exit") do
+    puts opts
+    exit(0)
+  end
+
+  opts.parse!
+
+  if options[:payload].nil?
+    puts opts
+    exit 0
+  end
+
+  payload_file = YAML.safe_load(
+    File.read(options[:payload])
+  )
+
+  logger.info "Starting Seijaku. Payload: #{payload_file["name"]}"
+
+  payload = Payload.new(payload_file, logger)
+  payload.execute!
+end

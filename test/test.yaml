@@ -1,0 +1,17 @@
+---
+name: test payload
+
+variables:
+  MY_ENV_DATA: $MY_ENV_DATA
+  MY_DATA: value
+
+tasks:
+  - name: test-1
+    pre:
+      - sh: mkdir tests-dir
+    post:
+      - sh: rm -rf tests-dir
+    steps:
+      - sh: echo "$MY_ENV_DATA"
+        output: true
+      - bash: echo "$MY_DATA"
