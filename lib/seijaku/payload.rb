@@ -7,8 +7,9 @@ module Seijaku
     def initialize(payload, logger)
       @name = payload.fetch("name")
       @variables = get_variables(payload.fetch("variables"))
+      @ssh_hosts = SSHGroup.new(payload.fetch("ssh", []))
       @tasks = payload.fetch("tasks").map do |task|
-        Task.new(task, @variables, logger)
+        Task.new(task, @variables, logger, @ssh_hosts)
       end
     end
 

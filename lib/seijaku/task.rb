@@ -3,12 +3,14 @@
 module Seijaku
   # Task is composed of a name, an array of Step (Pre, Post)
   class Task
-    def initialize(task, variables, logger)
-      @name = task.fetch("name", nil)
+    attr_reader :host
 
-      @steps = task.fetch("steps", []).map { |step| Step.new(step, variables, :steps, logger) }
-      @pre_steps = task.fetch("pre", []).map { |step| Step.new(step, variables, :pre, logger) }
-      @post_steps = task.fetch("post", []).map { |step| Step.new(step, variables, :post, logger) }
+    def initialize(task, variables, logger, ssh_hosts = nil)
+      @name = task.fetch("name", nil)
+      @host = task.fetch("host", nil)
+      @steps = task.fetch("steps", []).map { |step| Step.new(step, variables, :steps, logger, self, ssh_hosts) }
+      @pre_steps = task.fetch("pre", []).map { |step| Step.new(step, variables, :pre, logger, self, ssh_hosts) }
+      @post_steps = task.fetch("post", []).map { |step| Step.new(step, variables, :post, logger, self, ssh_hosts) }
       @logger = logger
 
       raise TaskError, "no name set in task", [] if @name.nil?
