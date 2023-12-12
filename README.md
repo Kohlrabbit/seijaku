@@ -1,5 +1,7 @@
 # Seijaku
 
+[![Seijaku version](https://badge.fury.io/rb/seijaku.svg)](https://badge.fury.io/rb/seijaku)
+
 Seijaku is a program that allows you to execute shell commands listed in YAML payload files, ensuring that they are executed correctly.
 
 ## Concepts
