@@ -5,13 +5,16 @@ variables:
   MY_ENV_DATA: $MY_ENV_DATA
   MY_DATA: value
 
+ssh:
+  - host: 195.15.201.32
+    port: 22
+    user: ubuntu
+    bastion: 195.15.201.32
+
 tasks:
   - name: test-1
-    pre:
-      - sh: mkdir tests-dir
-    post:
-      - sh: rm -rf tests-dir
+    host: 195.15.201.32
     steps:
+      - ssh: echo "from ssh"
       - sh: echo "$MY_ENV_DATA"
-        output: true
       - bash: echo "$MY_DATA"
