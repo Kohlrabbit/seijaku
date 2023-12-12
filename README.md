@@ -6,7 +6,7 @@ Seijaku is a program that allows you to execute shell commands listed in YAML pa
 
 Payloads are YAML files that describe the various tasks Seijaku will have to perform (in order). Each task contains one or more steps.
 
-A step is a shell command to be executed. Seijaku currently supports the following shells: bash and sh.
+A step is a shell command to be executed. Seijaku currently supports the following shells: bash, sh and ssh.
 
 Each task can have "pre" and "post" tasks, for example to create and delete folders, or install and uninstall software needed to run a task.
 
@@ -16,6 +16,11 @@ A step sometimes needs variables in order to be performed correctly: Seijaku sup
 
 ```yaml
 name: my payload
+
+ssh:
+  - host: my-host
+    user: user
+    port: 22
 
 variables:
   MY_VARIABLE: a static variable
@@ -37,6 +42,11 @@ tasks:
         soft_fail: true
     post:
       - sh: "do something after"
+  
+  - name: task with SSH executor
+    host: my-host
+    steps:
+      - ssh: echo "executed on host"
 ```
 
 ## Installation
@@ -45,7 +55,6 @@ tasks:
 
 * Ruby 2.5+
 * Rubygem
-
 
 Install Seijaku using Gem:
 
