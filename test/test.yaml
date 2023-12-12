@@ -6,14 +6,18 @@ variables:
   MY_DATA: value
 
 ssh:
-  - host: 195.15.201.32
+  - host: bastion-host
     port: 22
     user: ubuntu
-    bastion: 195.15.201.32
+
+  - host: my-host
+    port: 22
+    user: ubuntu
+    bastion: bastion-host
 
 tasks:
   - name: test-1
-    host: 195.15.201.32
+    host: my-host
     steps:
       - ssh: echo "from ssh"
       - sh: echo "$MY_ENV_DATA"
