@@ -1,0 +1,10 @@
+name: test scheduler
+
+payloads:
+  - payload: ./test/test.yaml
+    name: test payload
+    every: 10
+  
+  - payload: ./test/test.yaml
+    name: another-payload
+    every: 3
