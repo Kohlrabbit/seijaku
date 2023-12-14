@@ -24,7 +24,7 @@ module Seijaku
     def execute!
       result = SHExecutor.new(@sh, @variables).run! if @sh
       result = BashExecutor.new(@bash, @variables).run! if @bash
-      result = SSHExecutor.new(@ssh, @variables, @task, @ssh_hosts).run!
+      result = SSHExecutor.new(@ssh, @variables, @task, @ssh_hosts).run! if @ssh
 
       if result[:exit_status] != 0
         logger_output(result)
