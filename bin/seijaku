@@ -19,6 +19,7 @@ module App
   opts = OptionParser.new
   opts.banner = "Seijaku: simply runs YAML tasks with shell"
   opts.on("-f", "--file FILE", "Payload file path") { |o| options[:payload] = o }
+  opts.on("-s", "--scheduler FILE", "Scheduler file") { |o| options[:scheduler] = o }
   opts.on("-h", "--help", "Shows help and exit") do
     puts opts
     exit(0)
@@ -26,18 +27,42 @@ module App
 
   opts.parse!
 
-  if options[:payload].nil?
+  if options[:payload].nil? and options[:scheduler].nil?
     puts opts
-    exit 0
+    puts "Either -f or -s must be set"
+    exit 1
   end
 
-  payload_file = YAML.safe_load(
-    File.read(options[:payload]),
-    symbolize_names: true
-  )
+  if options[:payload] and options[:scheduler]
+    puts opts
+    puts "Either -f or -s must be set"
+    exit 1
+  end
 
-  logger.info "Starting Seijaku. Payload: #{payload_file["name"]}"
+  if options[:payload]
+    payload_file = YAML.safe_load(
+      File.read(options[:payload]),
+      symbolize_names: true
+    )
 
-  payload = Payload.new(payload_file, logger)
-  payload.execute!
+    logger.info "Starting Seijaku. Payload: #{payload_file["name"]}"
+
+    payload = Payload.new(payload_file, logger)
+    payload.execute!
+  end
+
+  if options[:scheduler]
+    scheduler_file = YAML.safe_load(
+      File.read(options[:scheduler])
+    )
+
+    logger.info "Starting Seijaku. Scheduler: #{scheduler_file["name"]}"
+    begin
+      scheduler = Scheduler.new(scheduler_file, logger)
+      scheduler.monitor!
+    rescue Interrupt
+      scheduler.soft_exit!
+      puts "All payloads did stop their execution gracefully."
+    end
+  end
 end

@@ -4,6 +4,8 @@ module Seijaku
   # Payload refers to the payload YAML file submitted by the user.
   # it includes tasks, steps, variables and name.
   class Payload
+    attr_reader :name
+
     def initialize(payload, logger)
       @name = payload.fetch(:name)
       @variables = get_variables(payload.fetch(:variables))

@@ -3,6 +3,7 @@
 [![Seijaku version](https://badge.fury.io/rb/seijaku.svg)](https://badge.fury.io/rb/seijaku)
 
 Seijaku is a program that allows you to execute shell commands listed in YAML payload files, ensuring that they are executed correctly.
+It includes a lightweight scheduler that will take care of executing payloads with specific delay between two executions.
 
 ## Concepts
 
@@ -13,6 +14,8 @@ A step is a shell command to be executed. Seijaku currently supports the followi
 Each task can have "pre" and "post" tasks, for example to create and delete folders, or install and uninstall software needed to run a task.
 
 A step sometimes needs variables in order to be performed correctly: Seijaku supports the direct definition of variables or from an environment variable of the shell running Seijaku.
+
+A scheduler is a file listing payloads that must be executed with unique specifications: a name, a delay between two runs and the path to the concerned payload.
 
 ## Example
 
@@ -51,6 +54,21 @@ tasks:
       - ssh: echo "executed on host"
 ```
 
+### Scheduler
+
+```yaml
+name: my-scheduler
+
+payloads:
+  - payload: ./test/my-payload.yaml
+    name: My test Payload
+    every: 3600				# executed every hour
+
+  - payload: ./test/another-payload.yaml
+    name: Another payload
+    every: 60				# executed every minute
+```
+
 ## Installation
 
 ### Dependencies
@@ -68,5 +86,6 @@ gem install seijaku
 
 ```bash
 seijaku -h
-seijaku -f ./my-payload.yaml
+seijaku -f ./my-payload.yaml # one-time payload execution
+seijaku -s ./my-scheduler.yaml # recurrent payloads execution with delay
 ```

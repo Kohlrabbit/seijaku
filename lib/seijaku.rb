@@ -12,6 +12,9 @@ require_relative "seijaku/executors/sh"
 require_relative "seijaku/executors/bash"
 require_relative "seijaku/executors/ssh"
 
+require_relative "seijaku/scheduler"
+require_relative "seijaku/scheduler_executor"
+
 module Seijaku
   class Error < StandardError; end
   class VariableError < Error; end
