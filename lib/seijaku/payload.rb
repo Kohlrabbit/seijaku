@@ -7,11 +7,12 @@ module Seijaku
     attr_reader :name
 
     def initialize(payload, logger)
-      @name = payload.fetch("name")
-      @variables = get_variables(payload.fetch("variables"))
-      @ssh_hosts = SSHGroup.new(payload.fetch("ssh", []))
-      @tasks = payload.fetch("tasks").map do |task|
-        Task.new(task, @variables, logger, @ssh_hosts)
+      @name = payload.fetch(:name)
+      @variables = get_variables(payload.fetch(:variables))
+      @ssh_hosts = SSHGroup.new(payload.fetch(:ssh, []))
+      @ssh_settings = payload.fetch(:ssh_settings, {})
+      @tasks = payload.fetch(:tasks).map do |task|
+        Task.new(task, @variables, logger, @ssh_hosts, @ssh_settings)
       end
     end
 

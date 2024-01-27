@@ -8,7 +8,7 @@ module Seijaku
     def initialize(ssh_group)
       @hosts = {}
       ssh_group.each do |host|
-        @hosts[host["host"]] = Host.new(host)
+        @hosts[host[:host]] = Host.new(host)
       end
     end
   end

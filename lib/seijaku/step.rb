@@ -6,17 +6,18 @@ module Seijaku
   class Step
     attr_reader :command, :pipeline
 
-    def initialize(step, variables, pipeline, logger, task, ssh_hosts = nil)
-      @sh = step.fetch("sh", nil)
-      @bash = step.fetch("bash", nil)
-      @ssh = step.fetch("ssh", nil)
-      @soft_fail = step.fetch("soft_fail", false)
-      @output = step.fetch("output", false)
+    def initialize(step, variables, pipeline, logger, task, ssh_hosts = nil, ssh_settings = {})
+      @sh = step.fetch(:sh, nil)
+      @bash = step.fetch(:bash, nil)
+      @ssh = step.fetch(:ssh, nil)
+      @soft_fail = step.fetch(:soft_fail, false)
+      @output = step.fetch(:output, false)
       @variables = variables
       @pipeline = pipeline
       @logger = logger
       @task = task
       @ssh_hosts = ssh_hosts
+      @ssh_settings = ssh_settings
 
       @command = (@sh || @bash) || @ssh
     end
@@ -24,7 +25,7 @@ module Seijaku
     def execute!
       result = SHExecutor.new(@sh, @variables).run! if @sh
       result = BashExecutor.new(@bash, @variables).run! if @bash
-      result = SSHExecutor.new(@ssh, @variables, @task, @ssh_hosts).run! if @ssh
+      result = SSHExecutor.new(@ssh, @variables, @task, @ssh_hosts, @ssh_settings).run!
 
       if result[:exit_status] != 0
         logger_output(result)

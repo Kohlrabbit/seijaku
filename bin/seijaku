@@ -41,7 +41,8 @@ module App
 
   if options[:payload]
     payload_file = YAML.safe_load(
-      File.read(options[:payload])
+      File.read(options[:payload]),
+      symbolize_names: true
     )
 
     logger.info "Starting Seijaku. Payload: #{payload_file["name"]}"
